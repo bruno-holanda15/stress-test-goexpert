@@ -10,6 +10,4 @@ COPY . ./
 
 RUN go build -o stress-test .
 
-ENTRYPOINT [ "./stress-test" ]
-
-CMD [ "run" ]
+ENTRYPOINT [ "./stress-test", "run"]

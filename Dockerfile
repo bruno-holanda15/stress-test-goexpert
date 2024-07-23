@@ -8,6 +8,8 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build -o stress-test main.go
+RUN go build -o stress-test .
 
-CMD [ "./stress-test", "run" ]
+ENTRYPOINT [ "./stress-test" ]
+
+CMD [ "run" ]

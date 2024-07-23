@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -19,7 +20,7 @@ var (
 
 // stressTestCmd represents the stressTest command
 var stressTestCmd = &cobra.Command{
-	Use:   "stress-test",
+	Use:   "run",
 	Short: "Execute stress test",
 	Long: `This commands must execute a stress test to a specific URL:
 
@@ -28,22 +29,33 @@ var stressTestCmd = &cobra.Command{
 	by Challenge from FullCycle Goexpert.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("stressTest called")
+		startTime := time.Now()
 
 		var wg sync.WaitGroup
 		concurrencyLimiter := make(chan struct{}, concurrency)
 
 		report := make(map[int]int)
 		var mu sync.Mutex
+		var counter int
 
 		for range qtyRequests {
 			wg.Add(1)
 
 			concurrencyLimiter <- struct{}{}
 			go makeReq(url, report, &mu, &wg, concurrencyLimiter)
+			counter++
 		}
 
 		wg.Wait()
-		fmt.Println(report)
+
+		timeSpent := time.Since(startTime)
+
+		fmt.Println("Tempo de execução em segundos:", timeSpent.Seconds())
+		fmt.Println("Quantidade de requests executadas:", counter)
+		fmt.Println("Requests executadas com sucesso (status code 200):", report[200])
+		for i, v := range report {
+			fmt.Println("Status Code:", i, "quantidade:", v)
+		}
 	},
 }
 
@@ -65,6 +77,6 @@ func makeReq(url string, report map[int]int, mu *sync.Mutex, wg *sync.WaitGroup,
 func init() {
 	rootCmd.AddCommand(stressTestCmd)
 	stressTestCmd.Flags().StringVarP(&url, "url", "u", "http://google.com.br", "URL to execute test")
-	stressTestCmd.Flags().IntVarP(&qtyRequests, "qtyRequests", "r", 7, "Number of requests")
+	stressTestCmd.Flags().IntVarP(&qtyRequests, "qtyRequests", "r", 100, "Number of requests")
 	stressTestCmd.Flags().IntVarP(&concurrency, "concurrency", "c", 5, "Concurrency to execute test")
 }

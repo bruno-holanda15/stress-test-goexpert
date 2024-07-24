@@ -77,6 +77,6 @@ func makeReq(url string, report map[int]int, mu *sync.Mutex, wg *sync.WaitGroup,
 func init() {
 	rootCmd.AddCommand(stressTestCmd)
 	stressTestCmd.Flags().StringVarP(&url, "url", "u", "http://google.com.br", "URL to execute test")
-	stressTestCmd.Flags().IntVarP(&qtyRequests, "qtyRequests", "r", 100, "Number of requests")
+	stressTestCmd.Flags().IntVarP(&qtyRequests, "requests", "r", 100, "Number of requests")
 	stressTestCmd.Flags().IntVarP(&concurrency, "concurrency", "c", 5, "Concurrency to execute test")
 }

@@ -33,6 +33,6 @@ Criar imagem a partir do arquivo Dockerfile na raiz do projeto.
 - `docker build -t stress-test .`
 
 Poderemos utilizar essa aplicação fazendo uma chamada via docker. Ex:
- - `docker run stress-test —url=http://google.com —requests=1000 —concurrency=10`
+ - `docker run stress-test —url http://google.com —requests 1000 —concurrency 10`
 
 Caso não seja passado as flags o sistema executará para argumentos default.
